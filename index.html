@@ -1,1 +1,195 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Risk Prediction</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef3f8;
+            margin: 0;
+            padding: 25px 15px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 28px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px #00000015;
+        }
+
+        h1 {
+            text-align: center;
+            color: #174a7e;
+            font-size: 27px;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 22px;
+            border: none;
+            border-radius: 7px;
+            background: #1769aa;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #104d80;
+        }
+
+        .result {
+            margin-top: 22px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #e8f4ff;
+            text-align: center;
+        }
+
+        .note {
+            font-size: 12px;
+            line-height: 1.5;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Diabetes Risk Prediction</h1>
+    <p>Medical Risk Prediction Using Statistical Feature Modelling</p>
+
+    <form method="POST">
+        <div class="grid">
+
+            <div>
+                <label>Gender</label>
+                <select name="gender" required>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Age</label>
+                <input type="number" name="age"
+                       min="0" max="120" step="any" required>
+            </div>
+
+            <div>
+                <label>BMI</label>
+                <input type="number" name="bmi"
+                       min="10" max="100" step="any" required>
+            </div>
+
+            <div>
+                <label>HbA1c Level</label>
+                <input type="number" name="HbA1c_level"
+                       min="0" max="20" step="any" required>
+            </div>
+
+            <div>
+                <label>Blood Glucose Level</label>
+                <input type="number" name="blood_glucose_level"
+                       min="0" max="1000" required>
+            </div>
+
+            <div>
+                <label>Hypertension</label>
+                <select name="hypertension" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Heart Disease</label>
+                <select name="heart_disease" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Smoking History</label>
+                <select name="smoking_history" required>
+                    <option value="never">Never</option>
+                    <option value="No Info">No Info</option>
+                    <option value="current">Current</option>
+                    <option value="former">Former</option>
+                    <option value="ever">Ever</option>
+                    <option value="not current">Not Current</option>
+                </select>
+            </div>
+
+        </div>
+
+        <button type="submit">Predict Diabetes Risk</button>
+    </form>
+
+    {% if result %}
+    <div class="result">
+        <h2>Prediction Result</h2>
+        <h3>{{ result }}</h3>
+        <p>Model-estimated probability of diabetes:
+            <strong>{{ probability }}%</strong>
+        </p>
+    </div>
+    {% endif %}
+
+    <p class="note">
+        Disclaimer: This is an educational machine-learning project,
+        not a medical diagnosis. The prediction is based on the
+        training dataset and should not replace professional medical
+        assessment.
+    </p>
+
+</div>
+</body>
+</html>
+
