@@ -1,0 +1,641 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Risk Prediction</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #08111f;
+            color: #edf4ff;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 35px 18px;
+            text-align: center;
+            background: linear-gradient(120deg, #102b4e, #075e67);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        header p {
+            color: #d2e9f5;
+            margin-bottom: 0;
+        }
+
+        main {
+            max-width: 1150px;
+            margin: auto;
+            padding: 24px 16px 40px;
+        }
+
+        .section {
+            background: #101d30;
+            border: 1px solid #263951;
+            border-radius: 15px;
+            padding: 23px;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #66e3d0;
+        }
+
+        h3 {
+            color: #b8d9ff;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit, minmax(165px, 1fr)
+            );
+            gap: 14px;
+        }
+
+        .card {
+            padding: 17px;
+            background: #172942;
+            border: 1px solid #304760;
+            border-radius: 12px;
+        }
+
+        .card p {
+            color: #a9bdd4;
+            margin: 0 0 6px;
+        }
+
+        .number {
+            font-size: 26px;
+            font-weight: bold;
+            color: #66e3d0;
+            overflow-wrap: anywhere;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit, minmax(220px, 1fr)
+            );
+            gap: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: #d7e5f7;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #405873;
+            border-radius: 8px;
+            background: #091525;
+            color: white;
+            font-size: 15px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 13px 22px;
+            background: #19bda8;
+            color: #04151a;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #61e5d3;
+        }
+
+        .success {
+            padding: 18px;
+            background: #103d3c;
+            border: 1px solid #238d7e;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .warning {
+            padding: 15px;
+            background: #492a20;
+            border: 1px solid #a45c3b;
+            border-radius: 10px;
+            margin-top: 18px;
+        }
+
+        .pill {
+            display: inline-block;
+            background: #173f4b;
+            color: #83f0df;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .muted {
+            color: #a9bdd4;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 430px;
+        }
+
+        th, td {
+            padding: 11px;
+            border-bottom: 1px solid #2b3d53;
+            text-align: left;
+        }
+
+        th {
+            color: #75e5d3;
+            background: #172942;
+        }
+
+        .graphs {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit, minmax(260px, 1fr)
+            );
+            gap: 18px;
+        }
+
+        .graph-card {
+            background: #0b1728;
+            border: 1px solid #2b3d53;
+            padding: 14px;
+            border-radius: 12px;
+            min-width: 0;
+            margin-top: 15px;
+        }
+
+        .graph-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 7px;
+            background: white;
+        }
+
+        .formula {
+            background: #091525;
+            padding: 17px;
+            border-left: 4px solid #66e3d0;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            text-align: center;
+            color: #9eb2c9;
+            padding: 15px 20px 30px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 25px;
+            }
+
+            .section {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Medical Risk Prediction</h1>
+    <p>Statistical Feature Modelling using Logistic Regression</p>
+    <p>Mathematics • Statistics • Machine Learning</p>
+</header>
+
+<main>
+
+    <!-- 01 DATASET OVERVIEW -->
+    <section class="section">
+        <h2>01. Dataset Overview</h2>
+
+        <div class="cards">
+            <div class="card">
+                <p>Total Records</p>
+                <div class="number">{{ records }}</div>
+            </div>
+
+            <div class="card">
+                <p>Diabetes-positive records</p>
+                <div class="number">{{ diabetes_count }}</div>
+            </div>
+
+            <div class="card">
+                <p>Diabetes-negative records</p>
+                <div class="number">{{ no_diabetes_count }}</div>
+            </div>
+
+            <div class="card">
+                <p>Test Accuracy</p>
+                <div class="number">{{ accuracy }}%</div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 02 INDIVIDUAL PREDICTION -->
+    <section class="section">
+        <h2>02. Individual Prediction Report</h2>
+
+        <p class="muted">
+            Enter the values and submit the form to generate
+            a prediction report and probability graph.
+        </p>
+
+        <form method="POST" action="/">
+            <div class="form-grid">
+
+                <div>
+                    <label for="age">Age (years)</label>
+                    <input id="age" name="age" type="number"
+                           min="0" max="120" step="any"
+                           placeholder="Example: 45" required>
+                </div>
+
+                <div>
+                    <label for="hypertension">Hypertension</label>
+                    <select id="hypertension"
+                            name="hypertension" required>
+                        <option value="0">0 - No</option>
+                        <option value="1">1 - Yes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="heart_disease">Heart Disease</label>
+                    <select id="heart_disease"
+                            name="heart_disease" required>
+                        <option value="0">0 - No</option>
+                        <option value="1">1 - Yes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="bmi">BMI</label>
+                    <input id="bmi" name="bmi" type="number"
+                           min="0" max="100" step="any"
+                           placeholder="Example: 27.5" required>
+                </div>
+
+                <div>
+                    <label for="hba1c_level">HbA1c Level</label>
+                    <input id="hba1c_level" name="hba1c_level"
+                           type="number" min="0" max="20" step="any"
+                           placeholder="Example: 5.8" required>
+                </div>
+
+                <div>
+                    <label for="blood_glucose_level">
+                        Blood Glucose Level
+                    </label>
+                    <input id="blood_glucose_level"
+                           name="blood_glucose_level"
+                           type="number" min="0" max="600"
+                           step="any" placeholder="Example: 140"
+                           required>
+                </div>
+
+            </div>
+
+            <button type="submit">
+                Generate Prediction Report
+            </button>
+        </form>
+
+        {% if error %}
+            <div class="warning">
+                <strong>Input Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if report %}
+            <div class="success">
+                <span class="pill">Individual Report</span>
+
+                <h3>{{ report.category }}</h3>
+
+                <p>
+                    <strong>Estimated model probability:</strong>
+                    {{ report.probability }}%
+                </p>
+
+                <p>
+                    <strong>Decision threshold:</strong> 50%
+                </p>
+
+                <p class="muted">
+                    The category is generated by the trained
+                    model using its default classification threshold.
+                </p>
+            </div>
+
+            <h3>Entered Values</h3>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in report.inputs %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Mathematical Calculation</h3>
+
+            <div class="formula">
+                <p><strong>Step 1: Linear score</strong></p>
+                <p>z = b₀ + b₁x₁ + b₂x₂ + ... + b₆x₆</p>
+
+                <p>
+                    Calculated score:
+                    <strong>{{ report.z_score }}</strong>
+                </p>
+
+                <p><strong>Step 2: Sigmoid function</strong></p>
+                <p>P = 1 / (1 + e<sup>−z</sup>)</p>
+
+                <p>
+                    Calculated probability:
+                    <strong>
+                        {{ report.calculated_probability }}%
+                    </strong>
+                </p>
+            </div>
+
+            <div class="graph-card">
+                <h3>Graph 6: Individual Prediction Probability</h3>
+
+                <img
+                    src="{{ url_for('static', filename='individual_prediction.png') }}"
+                    alt="Individual prediction probability graph">
+
+                <p class="muted">
+                    The bar shows the estimated probability for
+                    the submitted values. The red dashed line
+                    indicates the 50% decision threshold.
+                </p>
+            </div>
+        {% endif %}
+    </section>
+
+
+    <!-- 03 MATHEMATICAL MODEL -->
+    <section class="section">
+        <h2>03. Mathematical Logistic Regression</h2>
+
+        <p>
+            Logistic regression calculates a linear score and
+            converts it into a probability between 0 and 1.
+        </p>
+
+        <div class="formula">
+            <h3>Linear Equation</h3>
+            z = b₀ + b₁x₁ + b₂x₂ + ... + bₙxₙ
+
+            <h3>Sigmoid Function</h3>
+            P(Y = 1 | X) = 1 / (1 + e<sup>−z</sup>)
+        </div>
+
+        <div class="graph-card">
+            <h3>Graph 4: Logistic Sigmoid Function</h3>
+
+            <img
+                src="{{ url_for('static', filename='sigmoid.png') }}"
+                alt="Logistic sigmoid curve">
+
+            <p class="muted">
+                The curve converts the linear score into a
+                probability. The dashed line marks the 50% threshold.
+            </p>
+        </div>
+
+        <h3>Decision Rule</h3>
+        <ul>
+            <li>Probability of 50% or more: predict class 1.</li>
+            <li>Probability below 50%: predict class 0.</li>
+        </ul>
+    </section>
+
+
+    <!-- 04 FEATURE ANALYSIS -->
+    <section class="section">
+        <h2>04. Feature Analysis</h2>
+
+        <p>
+            This graph displays the learned coefficients for
+            the six standardized input features.
+        </p>
+
+        <div class="graph-card">
+            <h3>Graph 5: Feature Coefficients</h3>
+
+            <img
+                src="{{ url_for('static', filename='feature_analysis.png') }}"
+                alt="Logistic regression feature coefficient graph">
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Coefficient</th>
+                        <th>Interpretation</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in feature_rows %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.coefficient }}</td>
+                        <td>{{ item.direction }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p class="muted">
+            Positive coefficients increase the model's linear
+            score as the corresponding standardized feature rises.
+            Negative coefficients decrease it, holding other
+            features constant. These associations do not establish
+            causation.
+        </p>
+    </section>
+
+
+    <!-- 05 MODEL EVALUATION -->
+    <section class="section">
+        <h2>05. Model Evaluation</h2>
+
+        <div class="cards">
+            <div class="card">
+                <p>Accuracy</p>
+                <div class="number">{{ accuracy }}%</div>
+            </div>
+
+            <div class="card">
+                <p>Precision</p>
+                <div class="number">{{ precision }}%</div>
+            </div>
+
+            <div class="card">
+                <p>Recall / Sensitivity</p>
+                <div class="number">{{ recall }}%</div>
+            </div>
+
+            <div class="card">
+                <p>Specificity</p>
+                <div class="number">{{ specificity }}%</div>
+            </div>
+
+            <div class="card">
+                <p>F1-score</p>
+                <div class="number">{{ f1 }}%</div>
+            </div>
+        </div>
+
+        <p class="muted">
+            Accuracy measures overall correct predictions.
+            Precision measures the reliability of positive predictions.
+            Recall measures how many actual positive cases were found.
+            Specificity measures how many actual negative cases
+            were correctly identified. F1-score combines precision
+            and recall.
+        </p>
+    </section>
+
+
+    <!-- 06 STATISTICAL SUMMARY -->
+    <section class="section">
+        <h2>06. Statistical Feature Summary</h2>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Mean</th>
+                        <th>Median</th>
+                        <th>Std. Dev.</th>
+                        <th>Variance</th>
+                        <th>Minimum</th>
+                        <th>Maximum</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for feature, values in stats.items() %}
+                    <tr>
+                        <td>{{ feature.replace("_", " ").title() }}</td>
+                        <td>{{ values["mean"] }}</td>
+                        <td>{{ values["median"] }}</td>
+                        <td>{{ values["std"] }}</td>
+                        <td>{{ values["var"] }}</td>
+                        <td>{{ values["min"] }}</td>
+                        <td>{{ values["max"] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+
+    <!-- 07 DATASET GRAPHS -->
+    <section class="section">
+        <h2>07. Dataset Visualizations</h2>
+
+        <div class="graphs">
+            <div class="graph-card">
+                <h3>Class Distribution</h3>
+                <img
+                    src="{{ url_for('static', filename='classes.png') }}"
+                    alt="Diabetes class distribution">
+            </div>
+
+            <div class="graph-card">
+                <h3>Average Blood Glucose</h3>
+                <img
+                    src="{{ url_for('static', filename='glucose.png') }}"
+                    alt="Average blood glucose graph">
+            </div>
+
+            <div class="graph-card">
+                <h3>Correlation Heatmap</h3>
+                <img
+                    src="{{ url_for('static', filename='correlation.png') }}"
+                    alt="Feature correlation heatmap">
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 08 PROJECT INTERPRETATION -->
+    <section class="section">
+        <h2>08. Project Interpretation</h2>
+
+        <ul>
+            <li>Mean and median describe the centre of the data.</li>
+            <li>Variance and standard deviation measure data spread.</li>
+            <li>Correlation measures linear association between variables.</li>
+            <li>Logistic regression converts a linear score into a probability.</li>
+            <li>Feature coefficients describe how inputs contribute to the model score.</li>
+            <li>Evaluation metrics compare predictions with actual test labels.</li>
+        </ul>
+    </section>
+
+</main>
+
+<footer>
+    Medical Risk Prediction Using Statistical Feature Modelling
+    <br>
+    Python • Flask • Pandas • Scikit-learn • Matplotlib
+</footer>
+
+</body>
+</html>
